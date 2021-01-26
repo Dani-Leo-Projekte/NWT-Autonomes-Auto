@@ -4,7 +4,7 @@
 #include <Adafruit_BMP280.h>
 #include <SPI.h>
 #include <MFRC522.h>
- 
+
 #define echo 9
 #define trigger 8
 #define Taster 7
@@ -12,7 +12,7 @@
 #define Motor_Rechts 11
 #define Piezo 3
 #define eingang A0
-#define LED 10
+#define LED 5
 #define SS_PIN 10
 #define RST_PIN 9
 
@@ -89,9 +89,8 @@ int getAbstand(){
 }
 
 void LichtNachHelligkeit(){
-  long currentMillis = millis();
-  if (lastActionTime < (currentMillis - pause_helligkeit)) {
-    lastActionTime = currentMillis;
+  if ((millis() >= (lastActionTime + pause_helligkeit))) {
+    lastActionTime = millis();
    if(getLDR() <= ldrLevel5){
     analogWrite(LED, 255);
   }
