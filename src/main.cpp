@@ -2,6 +2,8 @@
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BMP280.h>
+#include <SPI.h>
+#include <MFRC522.h>
  
 #define echo 9
 #define trigger 8
@@ -11,6 +13,8 @@
 #define Piezo 3
 #define eingang A0
 #define LED 10
+#define SS_PIN 10
+#define RST_PIN 9
 
 #define ldrLevel5 50
 #define ldrLevel4 110
@@ -27,7 +31,28 @@ int aktuelleHelligkeit;
 const int pause_helligkeit = 20000;
 
 Adafruit_BMP280 bmp;
- 
+MFRC522 mfrc522(SS_PIN, RST_PIN);
+
+bool Authorisieren(){
+  mfrc522.PICC_IsNewCardPresent();
+  mfrc522.PICC_ReadCardSerial();
+  String RFID;
+  for (byte i = 0; i < mfrc522.uid.size; i++) 
+  {
+     RFID.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " "));
+     RFID.concat(String(mfrc522.uid.uidByte[i], HEX));
+  }
+  RFID.toUpperCase();
+  if (RFID.substring(1) == "99 45 A1 47")
+  {
+    return true;
+  }
+  else{
+    return false;
+    
+  }
+}
+
 int getTemperature(){
   int temperatur = bmp.readTemperature();
   Serial.println(temperatur);
@@ -100,6 +125,15 @@ void setup() {
   pinMode (LED, OUTPUT);
   Serial.begin(9600);
   bmp.begin(0x77);
+  SPI.begin();
+  mfrc522.PCD_Init();
+  while(!Authorisieren()){
+    Serial.print(".");
+    delay(100);
+  }
+  if(Authorisieren()){
+    Serial.println("Fahrzeug entriegelt");
+  }
 }
  
 void loop() {
