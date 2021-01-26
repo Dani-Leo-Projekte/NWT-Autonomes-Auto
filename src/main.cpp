@@ -64,9 +64,8 @@ int getAbstand(){
 }
 
 void LichtNachHelligkeit(){
-  long currentMillis = millis();
-  if (lastActionTime < (currentMillis - pause_helligkeit)) {
-    lastActionTime = currentMillis;
+  if ((millis() >= (lastActionTime + pause_helligkeit)) {
+    lastActionTime = millis();
    if(getLDR() <= ldrLevel5){
     analogWrite(LED, 255);
   }
