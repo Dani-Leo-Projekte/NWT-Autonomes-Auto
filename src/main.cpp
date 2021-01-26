@@ -29,6 +29,7 @@ long lastActionTime = 0;
 const int pause_geschwindigkeit = 5000;
 int aktuelleHelligkeit;
 const int pause_helligkeit = 20000;
+int geschwindigkeit = 0;
 
 Adafruit_BMP280 bmp;
 MFRC522 mfrc522(SS_PIN, RST_PIN);
@@ -69,12 +70,13 @@ byte Geschwindigkeit(){
   if (millis() >= (lastActionTime + pause_geschwindigkeit)) {
       lastActionTime = millis();
     if (getTemperature() <= 4){ //wenn die Temperatur unter 4 Grad fällt, wird die Geschwindigkeit auf die Hälfte verringert
-        return 127;
+        geschwindigkeit = 127;
     }
     else {
-      return 255;
+      geschwindigkeit = 255;
     }
   }
+  return geschwindigkeit;
 }
  
 int getAbstand(){
