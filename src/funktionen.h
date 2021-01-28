@@ -11,15 +11,16 @@
 bool Motor_State = false;
 
 long Abstand;
-long lastActionTime = 0;
+long lastActionTime_Geschwindigkeit = 0;
+long lastActionTime_Helligkeit = 0;
 
-int geschwindigkeit = 0;
+int geschwindigkeit = 255;
 int aktuelleHelligkeit;
 
 const int pause_geschwindigkeit = 5000;
 const int pause_helligkeit = 5000;
 
-const char* RFID_ID = "99 45 A1 47";
+const char* RFID_ID = "E5 56 D7 10";
 
 //Objekte
 Adafruit_BMP280 bmp;
@@ -56,16 +57,16 @@ int getLDR(){
 }
 
 byte Geschwindigkeit(){
-  if (millis() >= (lastActionTime + pause_geschwindigkeit)) {
-    lastActionTime = millis();
+  if (millis() >= (lastActionTime_Geschwindigkeit + pause_geschwindigkeit)) {
+    lastActionTime_Geschwindigkeit = millis();
     if (getTemperature() <= FrostgefahrTemperatur){ //wenn die Temperatur unter 4 Grad fällt, wird die Geschwindigkeit auf die Hälfte verringert
         geschwindigkeit = 127;
     }
     else {
       geschwindigkeit = 255;
     }
-  return geschwindigkeit;
   }
+  return geschwindigkeit;
 }
 
 int getAbstand(){
@@ -80,27 +81,26 @@ int getAbstand(){
 }
 
 void LichtNachHelligkeit(){
-  if ((millis() >= (lastActionTime + pause_helligkeit))) {
-    lastActionTime = millis();
-   if(getLDR() <= ldrLevel5){
-    analogWrite(LED, 255);
-  }
-  if(getLDR() <= ldrLevel4){
-    analogWrite(LED, 170);
-  }
-  if(getLDR() <= ldrLevel3){
-    analogWrite(LED, 125);
-  }
- 
-  if(getLDR() <= ldrLevel2){
- 
-    analogWrite(LED, 100);
-  }
-  if(getLDR() <= ldrLevel1){
-    analogWrite(LED, 50);
-  }
-  if(getLDR() >= ldrLevel1){
-    analogWrite(LED, 0);
-  }
+  if ((millis() >= (lastActionTime_Helligkeit + pause_helligkeit))) {
+    lastActionTime_Helligkeit = millis();
+    if(getLDR() <= ldrLevel5){
+      analogWrite(LED, 255);
+    }
+    if(getLDR() <= ldrLevel4){
+      analogWrite(LED, 170);
+    }
+    if(getLDR() <= ldrLevel3){
+      analogWrite(LED, 125);
+    }
+  
+    if(getLDR() <= ldrLevel2){
+      analogWrite(LED, 100);
+    }
+    if(getLDR() <= ldrLevel1){
+      analogWrite(LED, 50);
+    }
+    if(getLDR() >= ldrLevel1){
+      analogWrite(LED, 0);
+    }
   }
 }

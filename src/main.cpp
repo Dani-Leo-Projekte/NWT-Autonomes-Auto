@@ -20,7 +20,7 @@ void setup() {
   pinMode(Piezo, OUTPUT);
   pinMode (LED, OUTPUT);
   Serial.begin(9600);
-  if(!bmp.begin(0x76)){
+  if(!bmp.begin()){
     Serial.println("Temperatursensor nicht gefunden");
   }
   SPI.begin();

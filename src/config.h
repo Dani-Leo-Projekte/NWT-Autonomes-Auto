@@ -1,15 +1,15 @@
 #include <Arduino.h>
 
-#define echo 7
-#define trigger 6
-#define Taster 7
-#define Motor_Links 10
-#define Motor_Rechts 11
+#define echo 8
+#define trigger 7
+#define Taster 2
+#define Motor_Links 5
+#define Motor_Rechts 6
 #define Piezo 3
 #define eingang A0
-#define LED 5
+#define LED 9
 #define SS_PIN 10
-#define RST_PIN 9
+#define RST_PIN 4
 
 
 #define ldrLevel5 50
