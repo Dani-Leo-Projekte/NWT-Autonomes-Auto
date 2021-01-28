@@ -5,6 +5,7 @@
 #include <Adafruit_BMP280.h>
 #include <SPI.h>
 #include <MFRC522.h>
+#include <toneAC2.h>
 
 //externe Datein
 #include <config.h>
@@ -17,8 +18,8 @@ void setup() {
   pinMode(Motor_Links, OUTPUT);
   pinMode(Motor_Rechts, OUTPUT);
   pinMode(Taster, INPUT);
-  pinMode(Piezo, OUTPUT);
   pinMode (LED, OUTPUT);
+  noToneAC2();
   Serial.begin(9600);
   if(!bmp.begin()){
     Serial.println("Temperatursensor nicht gefunden");
@@ -33,7 +34,14 @@ void setup() {
   if(Authorisieren()){
     Serial.println();
     Serial.println("Fahrzeug entriegelt");
-  }
+    toneAC2(Piezo_Pin1, Piezo_Pin2, 800);
+    delay(50);
+    noToneAC2();
+    delay(50);
+    toneAC2(Piezo_Pin1, Piezo_Pin2, 800);
+    delay(50);
+    noToneAC2();  
+    }
 }
  
 void loop() {
@@ -63,10 +71,10 @@ void loop() {
 
   if(Abstand <= 20 && Motor_State){
     int Tonehohe = map(Abstand, 5, 20, 1000,100);
-    tone(Piezo,Tonehohe);
+    toneAC2(Piezo_Pin1, Piezo_Pin2,Tonehohe);
   }
   
   else{
-    noTone(Piezo);
+    noToneAC2();
   }
 }
