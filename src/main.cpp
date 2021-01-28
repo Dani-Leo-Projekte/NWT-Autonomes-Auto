@@ -20,20 +20,20 @@ void setup() {
   pinMode(Taster, INPUT);
   pinMode (LED, OUTPUT);
   noToneAC2();
-  Serial.begin(9600);
+  //Serial.begin(9600);
   if(!bmp.begin()){
-    Serial.println("Temperatursensor nicht gefunden");
+    //Serial.println("Temperatursensor nicht gefunden");
   }
   SPI.begin();
   mfrc522.PCD_Init();
-  Serial.print("Warte auf Authorisierung");
+  //Serial.print("Warte auf Authorisierung");
   while(!Authorisieren()){
-    Serial.print(".");
+    //Serial.print(".");
     delay(100);
   }
   if(Authorisieren()){
-    Serial.println();
-    Serial.println("Fahrzeug entriegelt");
+    //Serial.println();
+    //Serial.println("Fahrzeug entriegelt");
     toneAC2(Piezo_Pin1, Piezo_Pin2, 800);
     delay(50);
     noToneAC2();
@@ -42,16 +42,17 @@ void setup() {
     delay(50);
     noToneAC2();  
     }
+  
 }
  
 void loop() {
   if(digitalRead(Taster)){
     Motor_State = !Motor_State;
     if(Motor_State){
-    Serial.println("Motor gestartet!");
+    //Serial.println("Motor gestartet!");
     }
     else{
-      Serial.println("Motor gestoppt!");
+      //Serial.println("Motor gestoppt!");
     }
     while(digitalRead(Taster));    
   }
