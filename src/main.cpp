@@ -11,7 +11,6 @@
 #include <config.h>
 #include <funktionen.h>
 
-
 void setup() {
   pinMode(echo, INPUT);
   pinMode(trigger, OUTPUT);
@@ -20,51 +19,30 @@ void setup() {
   pinMode(Taster, INPUT);
   pinMode (LED, OUTPUT);
   noToneAC2();
-  //Serial.begin(9600);
-  if(!bmp.begin()){
-    //Serial.println("Temperatursensor nicht gefunden");
-  }
+  bmp.begin();
   SPI.begin();
   mfrc522.PCD_Init();
-  //Serial.print("Warte auf Authorisierung");
+
   while(!Authorisieren()){
-    //Serial.print(".");
     delay(100);
   }
-  if(Authorisieren()){
-    //Serial.println();
-    //Serial.println("Fahrzeug entriegelt");
-    toneAC2(Piezo_Pin1, Piezo_Pin2, 800);
-    delay(50);
-    noToneAC2();
-    delay(50);
-    toneAC2(Piezo_Pin1, Piezo_Pin2, 800);
-    delay(50);
-    noToneAC2();  
-    }
+  Entriegelung();
   
 }
  
 void loop() {
   if(digitalRead(Taster)){
     Motor_State = !Motor_State;
-    if(Motor_State){
-    //Serial.println("Motor gestartet!");
-    }
-    else{
-      //Serial.println("Motor gestoppt!");
-    }
     while(digitalRead(Taster));    
   }
 
-  LichtNachHelligkeit();
+  //LichtNachHelligkeit();
   Abstand = getAbstand();
 
   if(Abstand >= 8 && Motor_State){
-    analogWrite(Motor_Rechts, Geschwindigkeit());
-    analogWrite(Motor_Links, Geschwindigkeit());
+    analogWrite(Motor_Rechts, Geschwindigkeit()*Linie_folgen(1));
+    analogWrite(Motor_Links, Geschwindigkeit()*Linie_folgen(0));
   }
-
   else{
     digitalWrite(Motor_Rechts, LOW);
     digitalWrite(Motor_Links, LOW);
@@ -73,8 +51,7 @@ void loop() {
   if(Abstand <= 20 && Motor_State){
     int Tonehohe = map(Abstand, 5, 20, 1000,100);
     toneAC2(Piezo_Pin1, Piezo_Pin2,Tonehohe);
-  }
-  
+  }  
   else{
     noToneAC2();
   }

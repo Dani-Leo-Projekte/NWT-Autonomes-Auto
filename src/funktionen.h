@@ -17,6 +17,11 @@ long lastActionTime_Helligkeit = 0;
 int geschwindigkeit = 255;
 int aktuelleHelligkeit;
 
+int SensorLinksData = 0;
+int SensorRechtsData = 0;
+int FaktorRechts = 0;
+int FaktorLinks = 0;
+
 const int pause_geschwindigkeit = 5000;
 const int pause_helligkeit = 5000;
 
@@ -102,5 +107,41 @@ void LichtNachHelligkeit(){
     if(getLDR() >= ldrLevel1){
       analogWrite(LED, 0);
     }
+  }
+}
+
+void Entriegelung(){
+  toneAC2(Piezo_Pin1, Piezo_Pin2, 800);
+  delay(50);
+  noToneAC2();
+  delay(50);
+  toneAC2(Piezo_Pin1, Piezo_Pin2, 800);
+  delay(50);
+  noToneAC2();  
+}
+
+float Linie_folgen(bool i){
+  SensorLinksData = analogRead(SensorLinks);
+  SensorRechtsData = analogRead(SensorRechts);
+  if(SensorRechtsData > 600){
+    FaktorRechts = 0.5;
+    FaktorLinks = 1;
+  }
+  else{
+    Serial.println(SensorLinksData);
+    if(SensorLinksData < 250){
+      FaktorRechts  = 1;
+      FaktorLinks = 0.5;
+    }
+    else{
+      FaktorLinks = 1;
+      FaktorRechts = 1;
+    }
+  }
+  if(i){
+    return FaktorRechts;
+  }
+  else {
+    return FaktorLinks;
   }
 }

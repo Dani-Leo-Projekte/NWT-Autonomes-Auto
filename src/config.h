@@ -11,7 +11,8 @@
 #define LED 9
 #define SS_PIN 10
 #define RST_PIN 4
-
+#define SensorLinks A0
+#define SensorRechts A1
 
 #define ldrLevel5 50
 #define ldrLevel4 110
