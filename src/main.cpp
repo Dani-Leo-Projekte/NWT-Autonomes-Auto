@@ -36,7 +36,7 @@ void loop() {
     while(digitalRead(Taster));    
   }
 
-  //LichtNachHelligkeit();
+  LichtNachHelligkeit();
   Abstand = getAbstand();
 
   if(Abstand >= 8 && Motor_State){

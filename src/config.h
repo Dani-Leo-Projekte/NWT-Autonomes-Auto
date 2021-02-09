@@ -14,10 +14,4 @@
 #define SensorLinks A0
 #define SensorRechts A1
 
-#define ldrLevel5 50
-#define ldrLevel4 110
-#define ldrLevel3 300
-#define ldrLevel2 430
-#define ldrLevel1 700
-
 #define FrostgefahrTemperatur 4

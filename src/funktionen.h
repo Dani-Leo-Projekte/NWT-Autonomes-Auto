@@ -56,11 +56,6 @@ int getTemperature(){
   return temperatur;
 }
 
-int getLDR(){
-  aktuelleHelligkeit = analogRead(eingang);
-  return aktuelleHelligkeit;
-}
-
 byte Geschwindigkeit(){
   if (millis() >= (lastActionTime_Geschwindigkeit + pause_geschwindigkeit)) {
     lastActionTime_Geschwindigkeit = millis();
@@ -87,26 +82,14 @@ int getAbstand(){
 
 void LichtNachHelligkeit(){
   if ((millis() >= (lastActionTime_Helligkeit + pause_helligkeit))) {
+    aktuelleHelligkeit = analogRead(eingang);
+    if(aktuelleHelligkeit < 500){
+      analogWrite(LED, map(aktuelleHelligkeit, 0, 500, 255, 50));
+    }
+    else{
+      digitalWrite(LED, LOW);
+    }
     lastActionTime_Helligkeit = millis();
-    if(getLDR() <= ldrLevel5){
-      analogWrite(LED, 255);
-    }
-    if(getLDR() <= ldrLevel4){
-      analogWrite(LED, 170);
-    }
-    if(getLDR() <= ldrLevel3){
-      analogWrite(LED, 125);
-    }
-  
-    if(getLDR() <= ldrLevel2){
-      analogWrite(LED, 100);
-    }
-    if(getLDR() <= ldrLevel1){
-      analogWrite(LED, 50);
-    }
-    if(getLDR() >= ldrLevel1){
-      analogWrite(LED, 0);
-    }
   }
 }
 
