@@ -94,6 +94,17 @@ void LichtNachHelligkeit(){
 }
 
 void Entriegelung(){
+  for(int i = 0; i < 255; i++){
+    analogWrite(LED, i);
+    toneAC2(Piezo_Pin1, Piezo_Pin2, map(i, 0, 255, 500, 700));
+    delay(3);
+  }
+  for(int i = 255; i > 0; i--){
+    analogWrite(LED, i);
+    toneAC2(Piezo_Pin1, Piezo_Pin2, map(i, 0, 255, 500, 700));
+    delay(3);
+  }
+  analogWrite(LED, LOW);
   toneAC2(Piezo_Pin1, Piezo_Pin2, 800);
   delay(50);
   noToneAC2();
