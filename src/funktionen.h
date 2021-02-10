@@ -19,6 +19,8 @@ int aktuelleHelligkeit;
 
 int SensorLinksData = 0;
 int SensorRechtsData = 0;
+int SchwellenwertLinks;
+int SchwellenwertRechts;
 float FaktorRechts = 0;
 float FaktorLinks = 0;
 bool letzterSensorStatus[2];
@@ -66,7 +68,7 @@ byte Geschwindigkeit(){
         geschwindigkeit = 127;
     }
     else {
-      geschwindigkeit = 255;
+      geschwindigkeit = 215;
     }
   }
   return geschwindigkeit;
@@ -117,16 +119,56 @@ void Entriegelung(){
   noToneAC2();  
 }
 
+void Schwellenwert(){
+  int minRechts = 1000;
+  int minLinks = 1000;
+  int maxRechts = 0;
+  int maxLinks = 0;
+  int prevMillis = millis();
+  while(prevMillis + 1000 >= millis()){
+    SensorLinksData = analogRead(SensorLinks);
+    SensorRechtsData = analogRead(SensorRechts);
+    analogWrite(Motor_Rechts, 125);
+    if(SensorRechtsData > maxRechts)
+      maxRechts = SensorRechtsData;
+    if(SensorRechtsData< minRechts)
+      minRechts = SensorRechtsData;
+    if(SensorLinksData>maxLinks)
+      maxLinks = SensorLinksData;
+    if(SensorLinksData<minLinks)
+      minLinks = SensorLinksData;
+  }
+  analogWrite(Motor_Rechts, LOW);
+  delay(1000);
+  while(prevMillis + 4000 >= millis()){
+    SensorLinksData = analogRead(SensorLinks);
+    SensorRechtsData = analogRead(SensorRechts);
+    analogWrite(Motor_Links, 125);
+    if(SensorRechtsData > maxRechts)
+      maxRechts = SensorRechtsData;
+    if(SensorRechtsData< minRechts)
+      minRechts = SensorRechtsData;
+    if(SensorLinksData>maxLinks)
+      maxLinks = SensorLinksData;
+    if(SensorLinksData<minLinks)
+      minLinks = SensorLinksData;
+  }
+  analogWrite(Motor_Links,LOW);
+
+  SchwellenwertLinks = (minLinks + maxLinks) / 2;
+  SchwellenwertRechts = (minRechts + maxRechts) / 2;
+}
+
 float Linie_folgen(bool i){
   SensorLinksData = analogRead(SensorLinks);
   SensorRechtsData = analogRead(SensorRechts);
-  if(SensorLinksData > 250){
+  if(SensorLinksData > SchwellenwertLinks){
     SensorStatus[0] = 0;
   }
   else{
     SensorStatus[0] = 1;
   }
-  if(SensorRechtsData > 600){
+  if(SensorRechtsData > SchwellenwertRechts){
     SensorStatus[1] = 0;
   }
   else{

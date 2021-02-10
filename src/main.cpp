@@ -22,11 +22,12 @@ void setup() {
   bmp.begin();
   SPI.begin();
   mfrc522.PCD_Init();
-
   while(!Authorisieren()){
     delay(100);
   }
   Entriegelung();
+  delay(1000);
+  Schwellenwert();
   
 }
  
