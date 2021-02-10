@@ -19,8 +19,11 @@ int aktuelleHelligkeit;
 
 int SensorLinksData = 0;
 int SensorRechtsData = 0;
-int FaktorRechts = 0;
-int FaktorLinks = 0;
+float FaktorRechts = 0;
+float FaktorLinks = 0;
+bool letzterSensorStatus[2];
+bool SensorStatus[2];
+unsigned long lastActionTime = 0;
 
 const int pause_geschwindigkeit = 5000;
 const int pause_helligkeit = 5000;
@@ -117,25 +120,61 @@ void Entriegelung(){
 float Linie_folgen(bool i){
   SensorLinksData = analogRead(SensorLinks);
   SensorRechtsData = analogRead(SensorRechts);
-  if(SensorRechtsData > 600){
-    FaktorRechts = 0.5;
-    FaktorLinks = 1;
+  if(SensorLinksData > 250){
+    SensorStatus[0] = 0;
   }
   else{
-    Serial.println(SensorLinksData);
-    if(SensorLinksData < 250){
-      FaktorRechts  = 1;
-      FaktorLinks = 0.5;
+    SensorStatus[0] = 1;
+  }
+  if(SensorRechtsData > 600){
+    SensorStatus[1] = 0;
+  }
+  else{
+      SensorStatus[1] = 1;
+  }
+  if(SensorStatus[0] == 0 && SensorStatus[1] == 1){
+    FaktorLinks = 1;
+    FaktorRechts = 1;
+    letzterSensorStatus[0] = 0;
+    letzterSensorStatus[1] = 1;
+  }
+  if(SensorStatus[0] == 0 && SensorStatus[1] == 0){
+    FaktorLinks = 0.9;
+    FaktorRechts = 0.4;
+    letzterSensorStatus[0] = 0;
+    letzterSensorStatus[1] = 0;
+  }
+  if(SensorStatus[0] == 1 && SensorStatus[1] == 0){
+    FaktorLinks = 0.9;
+    FaktorRechts = 0.3;
+    letzterSensorStatus[0] = 1;
+    letzterSensorStatus[1] = 0;
+  }
+  if(SensorStatus[0] == 1 && SensorStatus[1] == 1 && letzterSensorStatus[1] == 0 && letzterSensorStatus[0] == 1){
+    FaktorLinks = 0.9;
+    FaktorRechts = 0.2;
+  }
+  else{
+    if(SensorStatus[0] == 1 && SensorStatus[1] == 1 && letzterSensorStatus[0] == 1 && letzterSensorStatus[1] == 1 && lastActionTime + 500 <= millis()){
+        FaktorLinks = 0.3;
+        FaktorRechts = 0.9;
     }
     else{
-      FaktorLinks = 1;
-      FaktorRechts = 1;
+      if(SensorStatus[0] == 1 && SensorStatus[1] == 1){
+          FaktorLinks = 0.5;
+          FaktorRechts = 0.9;
+          letzterSensorStatus[0] = 1;
+          letzterSensorStatus[1] = 1;
+          if(lastActionTime+600 < millis()){
+            lastActionTime = millis();
+          } 
+      }
     }
   }
   if(i){
-    return FaktorRechts;
+    return(FaktorRechts);
   }
-  else {
-    return FaktorLinks;
+  else{
+    return(FaktorLinks);
   }
 }
