@@ -8,7 +8,7 @@
 #include <config.h>
 
 //Variablen
-bool Motor_State = false;
+bool Motor_State = true;
 
 long Abstand;
 long lastActionTime_Geschwindigkeit = 0;

@@ -26,9 +26,8 @@ void setup() {
     delay(100);
   }
   Entriegelung();
-  delay(1000);
+  while(!digitalRead(Taster));
   Schwellenwert();
-  
 }
  
 void loop() {
